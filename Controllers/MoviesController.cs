@@ -34,9 +34,13 @@ namespace CinemaTA.Controllers
             }
         }
 
+        // POST: api/Movies
         [HttpPost]
-        public void PostMovie(Movie movie)
+        public string PostMovie(Movie movie)
         {
+            MovieData.MockMovieList.Add(movie);
+
+            return "Movie posted successfully";
         }
 
         [HttpPut("{id}")]
