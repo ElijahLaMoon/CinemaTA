@@ -5,17 +5,17 @@ namespace CinemaTA.Models
     public class Movie
     {
         [Key]
-        public uint Id { get; private set; }
+        public int Id { get; set; }
         [Required]
-        public string Title { get; private set; }
+        public string Title { get; set; }
         [Required]
-        public string Director { get; private set; }
+        public string Director { get; set; }
         [Required]
-        public uint ReleaseYear { get; private set; }
+        public uint ReleaseYear { get; set; }
 
         // This field is used for providing correct IDs without user interaction.
         // Basically, replaces autoincrement ID functionality available in most databases
-        private static uint movieCounter;
+        private static int movieCounter;
 
         public Movie() { }
         static Movie() => movieCounter = 0;
