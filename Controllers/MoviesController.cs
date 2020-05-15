@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using CinemaTA.Data;
 using CinemaTA.Models;
 
 namespace CinemaTA.Controllers
@@ -7,9 +9,14 @@ namespace CinemaTA.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
+        // GET: api/Movies
         [HttpGet]
-        public void Get()
+        public IEnumerable<Movie> Get()
         {
+            foreach (var movie in MovieData.MockMovieList)
+            {
+                yield return movie;
+            }
         }
 
         [HttpGet("{id}", Name = "Get")]
