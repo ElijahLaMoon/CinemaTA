@@ -61,9 +61,19 @@ namespace CinemaTA.Controllers
             }
         }
 
+        // DELETE: api/Movies/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public string Delete(int id)
         {
+            try
+            {
+                MovieData.MockMovieList.RemoveAt(id - 1);
+                return "Movie deleted successfully";
+            }
+            catch
+            {
+                return "No movie with such ID";
+            }
         }
     }
 }
