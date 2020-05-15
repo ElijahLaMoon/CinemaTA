@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using CinemaTA.Data;
 using CinemaTA.Models;
@@ -19,9 +20,18 @@ namespace CinemaTA.Controllers
             }
         }
 
+        // GET: api/Movies/{id}
         [HttpGet("{id}", Name = "Get")]
-        public void Get(int id)
+        public Movie Get(int id)
         {
+            try
+            {
+                return MovieData.MockMovieList[id - 1];
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         [HttpPost]
