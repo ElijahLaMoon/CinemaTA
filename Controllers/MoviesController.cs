@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using CinemaTA.Data;
 using CinemaTA.Models;
+using System.Linq;
 
 namespace CinemaTA.Controllers
 {
@@ -26,7 +27,7 @@ namespace CinemaTA.Controllers
         {
             try
             {
-                return MovieData.MockMovieList[id - 1];
+                return MovieData.MockMovieList.Where(m => m.Id == id).FirstOrDefault();
             }
             catch (Exception)
             {
@@ -48,16 +49,16 @@ namespace CinemaTA.Controllers
         public string Put(int id, Movie movie)
         {
             if (id != movie.Id)
-                return "IDs don't match each other";
+                return "Provided IDs don't match each other";
 
-            try
-            {
-                MovieData.MockMovieList[id - 1] = movie;
-                return "Movice changed successfully";
-            }
-            catch (Exception)
-            {
+            var movieToChange = MovieData.MockMovieList.Where(m => m.Id == id).FirstOrDefault();
+            if (movieToChange == null)
                 return "No movie with such ID";
+            else
+            {
+                var index = MovieData.MockMovieList.IndexOf(movieToChange);
+                MovieData.MockMovieList[index] = movie;
+                return "Movice changed successfully";
             }
         }
 
@@ -65,14 +66,13 @@ namespace CinemaTA.Controllers
         [HttpDelete("{id}")]
         public string Delete(int id)
         {
-            try
+            var movieToDelete = MovieData.MockMovieList.Where(m => m.Id == id).FirstOrDefault();
+            if (movieToDelete == null) 
+                return "No movie with such id";
+            else
             {
-                MovieData.MockMovieList.RemoveAt(id - 1);
+                MovieData.MockMovieList.Remove(movieToDelete);
                 return "Movie deleted successfully";
-            }
-            catch
-            {
-                return "No movie with such ID";
             }
         }
     }
