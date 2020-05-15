@@ -43,9 +43,22 @@ namespace CinemaTA.Controllers
             return "Movie posted successfully";
         }
 
+        // PUT: api/Movies/{id}
         [HttpPut("{id}")]
-        public void Put(int id, Movie movie)
+        public string Put(int id, Movie movie)
         {
+            if (id != movie.Id)
+                return "IDs don't match each other";
+
+            try
+            {
+                MovieData.MockMovieList[id - 1] = movie;
+                return "Movice changed successfully";
+            }
+            catch (Exception)
+            {
+                return "No movie with such ID";
+            }
         }
 
         [HttpDelete("{id}")]
