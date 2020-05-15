@@ -341,3 +341,7 @@ healthchecksdb
 
 # Visual Studio Code cache/options directory
 .vscode/
+
+# Environment files
+appsettings.json
+appsettings.Development.json
