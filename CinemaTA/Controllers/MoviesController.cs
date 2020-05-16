@@ -31,7 +31,7 @@ namespace CinemaTA.Controllers
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Movie>>> PostMovie(Movie movie)
         {
-            return await new MovieServices(database).UpdateMovie(movie);
+            return await new MovieServices(database).CreateNewMovie(movie);
         }
 
         // PUT: api/Movies
