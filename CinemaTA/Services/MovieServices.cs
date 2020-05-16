@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using CinemaTA.Models;
-using CinemaTA.Services;
 
 namespace CinemaTA.Services
 {
     public class MovieServices
     {
         private readonly MoviesContext database;
+        public MovieServices() => database = null;
         public MovieServices(MoviesContext context) => database = context;
 
         public async Task<ActionResult<IEnumerable<Movie>>> ReadMovies()
