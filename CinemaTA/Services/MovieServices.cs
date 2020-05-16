@@ -59,7 +59,7 @@ namespace CinemaTA.Services
 
             database.Movies.Remove(movie);
             await database.SaveChangesAsync();
-            return new ObjectResult(StatusCodes.Status204NoContent);
+            return new ObjectResult(StatusCodes.Status200OK);
         }
     }
 }
