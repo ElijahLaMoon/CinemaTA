@@ -12,7 +12,7 @@ namespace CinemaTA.Controllers
     [Route("api/Movies")]
     public class MoviesController : ControllerBase
     {
-        private MoviesContext database;
+        private readonly MoviesContext database;
         public MoviesController(MoviesContext context) => database = context;
 
         // GET: api/Movies
@@ -70,7 +70,7 @@ namespace CinemaTA.Controllers
 
             database.Movies.Remove(movie);
             await database.SaveChangesAsync();
-            return Ok(movie);
+            return NoContent();
         }
     }
 }
