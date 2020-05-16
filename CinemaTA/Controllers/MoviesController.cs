@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using CinemaTA.Models;
 using CinemaTA.Services;
 
@@ -19,58 +17,35 @@ namespace CinemaTA.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Movie>>> Get()
         {
-            return await database.Movies.ToListAsync();
+            return await new MovieServices(database).ReadMovies();
         }
 
         // GET: api/Movies/{id}
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<Movie>>> Get(int id)
         {
-            Movie movie = await database.Movies.FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null) 
-                return NotFound();
-
-            return new ObjectResult(movie);
+            return await new MovieServices(database).ReadSpecificMovie(id);
         }
 
         // POST: api/Movies
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Movie>>> PostMovie(Movie movie)
         {
-            if (movie == null)
-                return BadRequest();
-
-            database.Movies.Add(movie);
-            await database.SaveChangesAsync();
-            return Ok(movie);
+            return await new MovieServices(database).UpdateMovie(movie);
         }
 
         // PUT: api/Movies
         [HttpPut]
         public async Task<ActionResult<IEnumerable<Movie>>> Put(Movie movie)
         {
-            if (movie == null)
-                return BadRequest();
-
-            if (!database.Movies.Any(m => m.Id == movie.Id))
-                return NotFound();
-
-            database.Update(movie);
-            await database.SaveChangesAsync();
-            return Ok(movie);
+            return await new MovieServices(database).UpdateMovie(movie);
         }
 
         // DELETE: api/Movies/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult<IEnumerable<Movie>>> Delete(int id)
         {
-            Movie movie = database.Movies.FirstOrDefault(m => m.Id == id);
-            if (movie == null)
-                return NotFound();
-
-            database.Movies.Remove(movie);
-            await database.SaveChangesAsync();
-            return NoContent();
+            return await new MovieServices(database).DeleteMovie(id);
         }
     }
 }
