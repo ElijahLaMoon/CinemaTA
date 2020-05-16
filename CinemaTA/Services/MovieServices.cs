@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using CinemaTA.Models;
 using CinemaTA.Services;
 
-namespace CinemaTA.Controllers
+namespace CinemaTA.Services
 {
     public class MovieServices
     {
