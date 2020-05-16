@@ -1,79 +1,76 @@
-﻿using System;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using CinemaTA.Data;
+using Microsoft.EntityFrameworkCore;
 using CinemaTA.Models;
-using System.Linq;
+using CinemaTA.Services;
 
 namespace CinemaTA.Controllers
 {
-    [Route("api/Movies")]
     [ApiController]
+    [Route("api/Movies")]
     public class MoviesController : ControllerBase
     {
+        private MoviesContext database;
+        public MoviesController(MoviesContext context) => database = context;
+
         // GET: api/Movies
         [HttpGet]
-        public IEnumerable<Movie> Get()
+        public async Task<ActionResult<IEnumerable<Movie>>> Get()
         {
-            foreach (var movie in MovieData.MockMovieList)
-            {
-                yield return movie;
-            }
+            return await database.Movies.ToListAsync();
         }
 
         // GET: api/Movies/{id}
         [HttpGet("{id}", Name = "Get")]
-        public Movie Get(int id)
+        public async Task<ActionResult<IEnumerable<Movie>>> Get(int id)
         {
-            try
-            {
-                return MovieData.MockMovieList.Where(m => m.Id == id).FirstOrDefault();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            Movie movie = await database.Movies.FirstOrDefaultAsync(m => m.Id == id);
+            if (movie == null) 
+                return NotFound();
+
+            return new ObjectResult(movie);
         }
 
         // POST: api/Movies
         [HttpPost]
-        public string PostMovie(Movie movie)
+        public async Task<ActionResult<IEnumerable<Movie>>> PostMovie(Movie movie)
         {
-            MovieData.MockMovieList.Add(movie);
+            if (movie == null)
+                return BadRequest();
 
-            return "Movie posted successfully";
+            database.Movies.Add(movie);
+            await database.SaveChangesAsync();
+            return Ok(movie);
         }
 
-        // PUT: api/Movies/{id}
-        [HttpPut("{id}")]
-        public string Put(int id, Movie movie)
+        // PUT: api/Movies
+        [HttpPut]
+        public async Task<ActionResult<IEnumerable<Movie>>> Put(Movie movie)
         {
-            if (id != movie.Id)
-                return "Provided IDs don't match each other";
+            if (movie == null)
+                return BadRequest();
 
-            var movieToChange = MovieData.MockMovieList.Where(m => m.Id == id).FirstOrDefault();
-            if (movieToChange == null)
-                return "No movie with such ID";
-            else
-            {
-                var index = MovieData.MockMovieList.IndexOf(movieToChange);
-                MovieData.MockMovieList[index] = movie;
-                return "Movice changed successfully";
-            }
+            if (!database.Movies.Any(m => m.Id == movie.Id))
+                return NotFound();
+
+            database.Update(movie);
+            await database.SaveChangesAsync();
+            return Ok(movie);
         }
 
         // DELETE: api/Movies/{id}
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public async Task<ActionResult<IEnumerable<Movie>>> Delete(int id)
         {
-            var movieToDelete = MovieData.MockMovieList.Where(m => m.Id == id).FirstOrDefault();
-            if (movieToDelete == null) 
-                return "No movie with such id";
-            else
-            {
-                MovieData.MockMovieList.Remove(movieToDelete);
-                return "Movie deleted successfully";
-            }
+            Movie movie = database.Movies.FirstOrDefault(m => m.Id == id);
+            if (movie == null)
+                return NotFound();
+
+            database.Movies.Remove(movie);
+            await database.SaveChangesAsync();
+            return Ok(movie);
         }
     }
 }
